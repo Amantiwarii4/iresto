@@ -19,7 +19,12 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from django.conf import settings
 from django.conf.urls.static import static
+from rest_framework.routers import DefaultRouter
+from banner.views import *
 
+router = DefaultRouter()
+router.register('Category', Categoryapi)
+router.register('Products', Productapi)
 
 # router = DefaultRouter()
 # router.register(r'product', ProductViewSet, basename='Product')
@@ -28,6 +33,7 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('banner/', include('banner.urls')),
+    path('', include(router.urls)),
 ]
 
 if settings.DEBUG:

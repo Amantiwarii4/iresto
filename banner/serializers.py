@@ -1,5 +1,6 @@
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from .models import Banner, Category
+from .models import Banner, Category, Products, Product_image, Cart, Orders, Offers, Address, Dine_in, Booking, Review
+
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
 
@@ -56,22 +57,121 @@ class RegisterSerializer(serializers.ModelSerializer):
 
         return user
 
+
+class ProductimageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Product_image
+        # fields = ()
+        fields = '__all__'
+
+
 class BannerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Banner
-        # fields = ('id','username','email','password','phone','first_name','last_name','user_role','about','user_image')
+        # fields = ()
         fields = '__all__'
 
-class CategorySerializer(serializers.ModelSerializer):
+
+class CategoryadminSerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
-        fields = ('id','username','email','password','phone','first_name','last_name','user_role','about','user_image')
+        # fields = ('id', 'username', 'email', 'password', 'phone', 'first_name', 'last_name', 'user_role', 'about', 'user_image')
         fields = '__all__'
 
-class UserSerializer(serializers.ModelSerializer):
 
+class BannerclientSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Banner
+        fields = ('image',)
+        # fields = '__all__'
+
+
+class ReviewSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Review
+        fields = '__all__'
+
+
+class ProductSerializer(serializers.ModelSerializer):
+    images = ProductimageSerializer(read_only=True, many=True)
+    product_review = ReviewSerializer(read_only=True, many=True)
+
+    class Meta:
+        model = Products
+        # fields = ('name','category_name','discription','price','fav','unit','unit_price','variation')
+        fields = '__all__'
+
+
+class CategorySerializer(serializers.ModelSerializer):
+    products = ProductSerializer(read_only=True, many=True)
+
+    class Meta:
+        model = Category
+        # fields = ('id', 'username', 'email', 'password', 'phone', 'first_name', 'last_name', 'user_role', 'about', 'user_image')
+        fields = '__all__'
+
+
+class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         # fields = ('id','username','email','password','phone','first_name','last_name')
         fields = '__all__'
 
+
+class CartSerializer(serializers.ModelSerializer):
+    product = ProductSerializer(read_only=True)
+    user = UserSerializer(read_only=True)
+
+    class Meta:
+        model = Cart
+        fields = '__all__'
+
+
+class UserupdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('email', 'phone', 'first_name', 'last_name', 'image')
+        # fields = '__all__'
+
+
+class AdminSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('id', 'last_login', 'email', 'username', 'is_superuser')
+        # fields = '__all__'
+
+
+class OfferSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Offers
+        # fields = ('id', 'last_login', 'email', 'username', 'is_superuser')
+        fields = '__all__'
+
+
+class AddressSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Address
+        # fields = ('id', 'last_login', 'email', 'username', 'is_superuser')
+        fields = '__all__'
+
+
+class OrdersSerializer(serializers.ModelSerializer):
+    products = ProductSerializer(read_only=True)
+    users = UserSerializer(read_only=True)
+    addresses = AddressSerializer(read_only=True)
+
+    class Meta:
+        model = Orders
+        fields = '__all__'
+
+
+class DieninSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Dine_in
+        fields = '__all__'
+
+
+class BookingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Booking
+        fields = '__all__'
